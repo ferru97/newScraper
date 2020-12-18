@@ -18,9 +18,9 @@ class usaToday:
             for p in article_tag.find_all("p", recursive=False):
                 article += str(p.get_text()).replace("\n"," ")
 
-        #author_span = soup.findAll("span", {"class": "authors"})
-        #if author_span!=None:
-        #    author = str(author_span.get_text()).replace("\n"," ")
+        author_span = soup.find("span", {"class": "authors"})
+        if author_span!=None:
+            author = str(author_span.get_text()).replace("\n"," ")
 
         return article, author
 

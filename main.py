@@ -40,7 +40,8 @@ def main(filename, scraper, website):
             body = driver.find_element_by_tag_name("body")
             html = str(body.get_attribute('innerHTML'))
             article, author = scraper.getArticle(html)
-        except:
+        except Exception as e:
+            print(e)
             continue
         df.loc[index,"Article"] = article
         df.loc[index,"Author"] = author
