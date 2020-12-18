@@ -3,6 +3,7 @@ import time
 import Utils
 import sys
 import usaToday
+import NYT
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -19,8 +20,8 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
     if iteration == total: 
         print()
 
-def main(filename, scraper, website):
-    print("Scraping "+website)
+def main(filename, scraper):
+    print("Scraping "+scraper.name)
     dataset_path = os.path.join(Utils.dataset_folder,filename)
     df = pd.read_csv(dataset_path, error_bad_lines=False, index_col=False)
     df["Author"] = "--"
@@ -30,7 +31,15 @@ def main(filename, scraper, website):
     options = webdriver.ChromeOptions()
     options.add_argument("--incognito")
     driver = webdriver.Chrome(executable_path=os.path.join(dir_path, "chromedriver"), chrome_options=options)
-    
+
+    if scraper.login_required==True:
+        print("Login required...")
+        driver = scraper.login(driver)
+        if driver == None:
+            print("Error: unable to login!")
+            return
+        print("Logged in successfully!")
+     
     k = 1
     totla = len(df.index)
     for index, row in df.iterrows(): #add if already scraped continue 
@@ -39,6 +48,7 @@ def main(filename, scraper, website):
             driver.get(row["url"])
             body = driver.find_element_by_tag_name("body")
             html = str(body.get_attribute('innerHTML'))
+            scraper.botDetected(html)
             article, author = scraper.getArticle(html)
         except Exception as e:
             print(e)
@@ -48,12 +58,15 @@ def main(filename, scraper, website):
         k += 1
         time.sleep(wait_time)
 
-    df.to_csv(dataset_path, encoding='utf-8-sig', index=False)
+    df.to_csv(dataset_path, encoding='utf-8-sig', index=False) 
 
 
 if __name__ == "__main__":
+
     for file in os.listdir(Utils.dataset_folder):
-        if "usatoday-com" in file:
-            main(file, usaToday.scraper, "usatoday.com")
+        if "usatoday-com" in file and sys.argv[1]=="1":
+            main(file, usaToday.scraper)
+        if "nytimes-com" in file and sys.argv[1]=="2":
+            main(file, NYT.scraper)
 
     print("Done!")

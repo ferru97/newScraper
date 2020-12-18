@@ -5,6 +5,7 @@ import html as html_es
 class usaToday:
     def __init__(self):
         self.login_required = False
+        self.name = "usatoday.com"
     
     def getArticle(self,html):
         article = "NA"
@@ -23,6 +24,9 @@ class usaToday:
             author = str(author_span.get_text()).replace("\n"," ")
 
         return article, author
+
+    def botDetected(self,html):
+        return
 
 
 scraper = usaToday()
