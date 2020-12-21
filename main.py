@@ -24,8 +24,9 @@ def main(filename, scraper):
     print("Scraping "+scraper.name)
     dataset_path = os.path.join(Utils.dataset_folder,filename)
     df = pd.read_csv(dataset_path, error_bad_lines=False, index_col=False)
-    df["Author"] = "--"
-    df["Article"] = "--"
+    if 'Article' not in df.columns:
+        df["Author"] = "--"
+        df["Article"] = "--"
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     options = webdriver.ChromeOptions()
@@ -40,10 +41,14 @@ def main(filename, scraper):
             return
         print("Logged in successfully!")
      
+    count = 0 
     k = 1
     totla = len(df.index)
     for index, row in df.iterrows(): #add if already scraped continue 
+        k += 1
         printProgressBar(k,totla)
+        if row["Article"]!="NA" and row["Article"]!="--":
+            continue
         try:
             driver.get(row["url"])
             body = driver.find_element_by_tag_name("body")
@@ -55,7 +60,12 @@ def main(filename, scraper):
             continue
         df.loc[index,"Article"] = article
         df.loc[index,"Author"] = author
-        k += 1
+
+        count += 1
+        if count>99:
+            print("Saveing..")
+            df.to_csv(dataset_path, encoding='utf-8-sig', index=False) 
+            count = 0
         time.sleep(wait_time)
 
     df.to_csv(dataset_path, encoding='utf-8-sig', index=False) 
