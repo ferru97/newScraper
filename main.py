@@ -47,13 +47,13 @@ def main(filename, scraper, start, end):
      
     count = 0 
     k = 1
-    totla = start+end
-    for index, row in df.iterrows(): #add if already scraped continue 
+    totla = end-start+2
+    for index, row in df.iterrows():
         if index<start or index>end:
             continue
         k += 1
         printProgressBar(k,totla)
-        if row["Article"]!="NA" and row["Article"]!="--":
+        if row["Article"] not in ["NA", "--"]:
             continue
         try:
             driver.get(row["url"])
@@ -78,12 +78,13 @@ def main(filename, scraper, start, end):
 
 
 if __name__ == "__main__":
-    if len(sys.argv)!=2:
+    print(sys.argv)
+    if len(sys.argv)==2:
         start = None
         end = None
-    else
-        start = int(sys.argv[2])
-        end = int(sys.argv[3])
+    else:
+        start = int(sys.argv[2])-1
+        end = int(sys.argv[3])-1
 
     for file in os.listdir(Utils.dataset_folder):
         if "usatoday-com" in file and sys.argv[1]=="1":
