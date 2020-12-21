@@ -20,13 +20,17 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
     if iteration == total: 
         print()
 
-def main(filename, scraper):
+def main(filename, scraper, start, end):
     print("Scraping "+scraper.name)
     dataset_path = os.path.join(Utils.dataset_folder,filename)
     df = pd.read_csv(dataset_path, error_bad_lines=False, index_col=False)
     if 'Article' not in df.columns:
         df["Author"] = "--"
         df["Article"] = "--"
+
+    if start==None:
+        start = 0
+        end = len(df.index)
 
     dir_path = os.path.dirname(os.path.realpath(__file__))
     options = webdriver.ChromeOptions()
@@ -43,8 +47,10 @@ def main(filename, scraper):
      
     count = 0 
     k = 1
-    totla = len(df.index)
+    totla = start+end
     for index, row in df.iterrows(): #add if already scraped continue 
+        if index<start or index>end:
+            continue
         k += 1
         printProgressBar(k,totla)
         if row["Article"]!="NA" and row["Article"]!="--":
@@ -72,11 +78,17 @@ def main(filename, scraper):
 
 
 if __name__ == "__main__":
+    if len(sys.argv)!=2:
+        start = None
+        end = None
+    else
+        start = int(sys.argv[2])
+        end = int(sys.argv[3])
 
     for file in os.listdir(Utils.dataset_folder):
         if "usatoday-com" in file and sys.argv[1]=="1":
-            main(file, usaToday.scraper)
+            main(file, usaToday.scraper, start, end)
         if "nytimes-com" in file and sys.argv[1]=="2":
-            main(file, NYT.scraper)
+            main(file, NYT.scraper, start, end)
 
     print("Done!")
