@@ -3,7 +3,7 @@ import time
 import Utils
 import sys
 import usaToday
-import NYT
+import CNN
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -89,7 +89,7 @@ if __name__ == "__main__":
     for file in os.listdir(Utils.dataset_folder):
         if "usatoday-com" in file and sys.argv[1]=="1":
             main(file, usaToday.scraper, start, end)
-        if "nytimes-com" in file and sys.argv[1]=="2":
-            main(file, NYT.scraper, start, end)
+        if "cnn-com" in file and sys.argv[1]=="2":
+            main(file, CNN.scraper, start, end)
 
     print("Done!")

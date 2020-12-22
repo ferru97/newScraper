@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import html as html_es
+from Utils import text4csv
 
 
 class usaToday:
@@ -17,11 +18,11 @@ class usaToday:
         if article_tag!=None:
             article = ""
             for p in article_tag.find_all("p", recursive=False):
-                article += str(p.get_text()).replace("\n"," ")
+                article += text4csv(p.get_text())
 
         author_span = soup.find("span", {"class": "authors"})
         if author_span!=None:
-            author = str(author_span.get_text()).replace("\n"," ")
+            author = text4csv(author_span.get_text())
 
         return article, author
 
