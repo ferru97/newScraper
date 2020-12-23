@@ -6,4 +6,4 @@ def text4csv(text):
     text = str(text)
     text = text.replace(";"," ")
     text = text.replace("\n"," ")
-    return txt
+    return text
