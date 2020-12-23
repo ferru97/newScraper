@@ -10,7 +10,6 @@ A python tool for downloading newspaper articles
 ## How to use
 
 ### Dataset Nameing
-Open the terminal in the tool folder and run the tool using the following syntax: py main.py number_of_times num_of_pages where:
 - Place datasets in the dataset/ folder
 - Rename the datasets using the following format
     - For usatoday use *www-usatoday-com.csv*
