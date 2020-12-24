@@ -13,11 +13,12 @@ A python tool for downloading newspaper articles
 - Place datasets in the *dataset/* folder
 - Rename the datasets using the following format
     - For usatoday use *www-usatoday-com.csv*
+    - For usatoday use *www-cnn-com*
 
 ### Script execution
 - Only the first time, open the CMD in the script folder and run `pip install -r requirements.txt`
 - Run the script using the following format py main.py website start_index end_index where:
-    - website is an integer and represents the website: *1=usatoday*
+    - website is an integer and represents the website: *1=usatoday*, *2=cnn*
     - **start_index** and **end_index** are optional and represent the rows range to analyze
 
 Examples:

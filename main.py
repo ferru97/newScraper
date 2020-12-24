@@ -35,6 +35,7 @@ def main(filename, scraper, start, end):
     dir_path = os.path.dirname(os.path.realpath(__file__))
     options = webdriver.ChromeOptions()
     options.add_argument("--incognito")
+    options.add_argument("--log-level=3");
     driver = webdriver.Chrome(executable_path=os.path.join(dir_path, "chromedriver"), chrome_options=options)
 
     if scraper.login_required==True:
