@@ -13,23 +13,29 @@ class CNN:
 
     
     def getArticle(self,html):
+        avoid_text = ["Do Not Sell","We're no longer maintaining this page.","For the latest business news and markets data, please visit CNN"]
         article = "NA"
         author = "NA"
 
         soup = BeautifulSoup(html, "html.parser")
-        article_tag = soup.findAll("div", {"class": "zn-body__paragraph"})
+        article_tag = soup.findAll("div", {"class": "el__leafmedia el__leafmedia--sourced-paragraph"})
+        article_tag += soup.findAll("div", {"class": "zn-body__paragraph"})
         if len(article_tag)>0: #version 1
             article = ""
             for d in article_tag:
+                if d.get_text().strip() in avoid_text:
+                    continue
                 article += " "+text4csv(d.get_text())
         
         else: #version 2
             article_tag = soup.find("div", {"id": "storytext"})
             if article_tag != None:
-                paragraphs = soup.findAll("p")
+                paragraphs = article_tag.findAll("p")
                 if len(paragraphs)>0:
                     article = ""
                     for p in paragraphs:
+                        if p.get_text().strip() in avoid_text:
+                            continue
                         article += " "+text4csv(p.get_text())
 
         author_span = soup.find("span", {"class": "metadata__byline__author"})
