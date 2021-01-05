@@ -4,6 +4,7 @@ import Utils
 import sys
 import usaToday
 import CNN
+import foxNews
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -52,9 +53,17 @@ def main(filename, scraper, start, end):
     for index, row in df.iterrows():
         if index<start or index>end:
             continue
+
+        count += 1
+        if count>10:
+            print("Saveing..")
+            df.to_csv(dataset_path, encoding='utf-8-sig', index=False) 
+            count = 0
+
         k += 1
         printProgressBar(k,totla)
         if row["Article"] not in ["NA", "--"]:
+            print("ok")
             continue
         try:
             driver.get(row["url"])
@@ -63,16 +72,11 @@ def main(filename, scraper, start, end):
             scraper.botDetected(html)
             article, author = scraper.getArticle(html)
         except Exception as e:
-            print(e)
+            print("Error: "+str(e))
             continue
         df.loc[index,"Article"] = article
         df.loc[index,"Author"] = author
 
-        count += 1
-        if count>99:
-            print("Saveing..")
-            df.to_csv(dataset_path, encoding='utf-8-sig', index=False) 
-            count = 0
         time.sleep(wait_time)
 
     df.to_csv(dataset_path, encoding='utf-8-sig', index=False) 
@@ -92,5 +96,7 @@ if __name__ == "__main__":
             main(file, usaToday.scraper, start, end)
         if "cnn-com" in file and sys.argv[1]=="2":
             main(file, CNN.scraper, start, end)
+        if "foxnews-com" in file and sys.argv[1]=="3":
+            main(file, foxNews.scraper, start, end)
 
     print("Done!")
