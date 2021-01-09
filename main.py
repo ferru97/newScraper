@@ -4,6 +4,8 @@ import Utils
 import sys
 import usaToday
 import CNN
+import foxNews
+import yahoo
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -46,33 +48,41 @@ def main(filename, scraper, start, end):
             return
         print("Logged in successfully!")
      
+    cookies_accepted = False
     count = 0 
     k = 1
     totla = end-start+2
     for index, row in df.iterrows():
         if index<start or index>end:
             continue
-        k += 1
-        printProgressBar(k,totla)
-        if row["Article"] not in ["NA", "--"]:
-            continue
-        try:
-            driver.get(row["url"])
-            body = driver.find_element_by_tag_name("body")
-            html = str(body.get_attribute('innerHTML'))
-            scraper.botDetected(html)
-            article, author = scraper.getArticle(html)
-        except Exception as e:
-            print(e)
-            continue
-        df.loc[index,"Article"] = article
-        df.loc[index,"Author"] = author
 
         count += 1
         if count>99:
             print("Saveing..")
             df.to_csv(dataset_path, encoding='utf-8-sig', index=False) 
             count = 0
+
+        k += 1
+        printProgressBar(k,totla)
+        if row["Article"] not in ["NA", "--"]:
+            continue
+        try:
+            driver.get(row["url"])
+            if scraper.name=="yahoo.com" and cookies_accepted==False:
+                scraper.acceptCookies(driver)
+                cookies_accepted = True
+                time.sleep(wait_time)
+            
+            body = driver.find_element_by_tag_name("body")
+            html = str(body.get_attribute('innerHTML'))
+            scraper.botDetected(html)
+            article, author = scraper.getArticle(html)
+        except Exception as e:
+            print("Error: "+str(e))
+            continue
+        df.loc[index,"Article"] = article
+        df.loc[index,"Author"] = author
+
         time.sleep(wait_time)
 
     df.to_csv(dataset_path, encoding='utf-8-sig', index=False) 
@@ -87,10 +97,15 @@ if __name__ == "__main__":
         start = int(sys.argv[2])-1
         end = int(sys.argv[3])-1
 
+    web_source = sys.argv[1]
     for file in os.listdir(Utils.dataset_folder):
-        if "usatoday-com" in file and sys.argv[1]=="1":
+        if "usatoday-com" in file and web_source=="1":
             main(file, usaToday.scraper, start, end)
-        if "cnn-com" in file and sys.argv[1]=="2":
+        if "cnn-com" in file and web_source=="2":
             main(file, CNN.scraper, start, end)
+        if "foxnews-com" in file and web_source=="3":
+            main(file, foxNews.scraper, start, end)
+        if "yahoo-com" in file and web_source=="4":
+            main(file, yahoo.scraper, start, end)
 
     print("Done!")
