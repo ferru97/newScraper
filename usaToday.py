@@ -13,14 +13,14 @@ class usaToday:
         author = "NA"
 
         soup = BeautifulSoup(html, "html.parser")
-        article_tag = soup.find("article")
+        article_tag = soup.find("div",{"class":"caas-content-wrapper"})
 
         if article_tag!=None:
             article = ""
             for p in article_tag.find_all("p", recursive=False):
                 article += text4csv(p.get_text())
 
-        author_span = soup.find("span", {"class": "authors"})
+        author_span = article_tag.find("div", {"class": "caas-attr-meta"})
         if author_span!=None:
             author = text4csv(author_span.get_text())
 
