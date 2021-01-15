@@ -16,11 +16,13 @@ A python tool for downloading newspaper articles
     - For CNN use *www-cnn-com*
     - For Fox News use *www-foxnews-com*
     - For Yahoo use *www-news-yahoo-com*
+    - For The Street use *www-thestreet-com*
+    - For CNBC use *www-cnbc-com*
 
 ### Script execution
 - Only the first time, open the CMD in the script folder and run `pip install -r requirements.txt`
 - Run the script using the following format py main.py website start_index end_index where:
-    - website is an integer and represents the website: *1=usatoday*, *2=cnn*, *3=Fox News*, *4=Yahoo*
+    - website is an integer and represents the website: *1=usatoday*, *2=cnn*, *3=Fox News*, *4=Yahoo*, *5=The Streey*, *6=CNBC*
     - **start_index** and **end_index** are optional and represent the rows range to analyze
 
 Examples:

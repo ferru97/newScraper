@@ -5,7 +5,9 @@ import sys
 import usaToday
 import CNN
 import foxNews
+import theStreet
 import yahoo
+import cnbc
 import pandas as pd
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -57,7 +59,7 @@ def main(filename, scraper, start, end):
             continue
 
         count += 1
-        if count>99:
+        if count>9:
             print("Saveing..")
             df.to_csv(dataset_path, encoding='utf-8-sig', index=False) 
             count = 0
@@ -68,7 +70,7 @@ def main(filename, scraper, start, end):
             continue
         try:
             driver.get(row["url"])
-            if scraper.name=="yahoo.com" and cookies_accepted==False:
+            if scraper.name in ["yahoo.com"] and cookies_accepted==False:
                 scraper.acceptCookies(driver)
                 cookies_accepted = True
                 time.sleep(wait_time)
@@ -99,13 +101,17 @@ if __name__ == "__main__":
 
     web_source = sys.argv[1]
     for file in os.listdir(Utils.dataset_folder):
-        if "usatoday-com" in file and web_source=="1":
+        if "usatoday" in file and web_source=="1":
             main(file, usaToday.scraper, start, end)
-        if "cnn-com" in file and web_source=="2":
+        if "cnn" in file and web_source=="2":
             main(file, CNN.scraper, start, end)
-        if "foxnews-com" in file and web_source=="3":
+        if "foxnews" in file and web_source=="3":
             main(file, foxNews.scraper, start, end)
-        if "yahoo-com" in file and web_source=="4":
+        if "yahoo" in file and web_source=="4":
             main(file, yahoo.scraper, start, end)
+        if "thestreet" in file and web_source=="5":
+            main(file, theStreet.scraper, start, end)
+        if "cnbc" in file and web_source=="6":
+            main(file, cnbc.scraper, start, end)
 
     print("Done!")
