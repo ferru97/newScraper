@@ -31,6 +31,9 @@ def main(filename, scraper, start, end):
     if 'Article' not in df.columns:
         df["Author"] = "--"
         df["Article"] = "--"
+    if 'Video' not in df.columns and "cnbc" in scraper.name:
+        df["Video"] = "--"
+
 
     if start==None:
         start = 0
@@ -41,14 +44,6 @@ def main(filename, scraper, start, end):
     options.add_argument("--incognito")
     options.add_argument("--log-level=3");
     driver = webdriver.Chrome(executable_path=os.path.join(dir_path, "chromedriver"), chrome_options=options)
-
-    if scraper.login_required==True:
-        print("Login required...")
-        driver = scraper.login(driver)
-        if driver == None:
-            print("Error: unable to login!")
-            return
-        print("Logged in successfully!")
      
     cookies_accepted = False
     count = 0 
@@ -59,7 +54,7 @@ def main(filename, scraper, start, end):
             continue
 
         count += 1
-        if count>9:
+        if count>99:
             print("Saveing..")
             df.to_csv(dataset_path, encoding='utf-8-sig', index=False) 
             count = 0
@@ -70,6 +65,12 @@ def main(filename, scraper, start, end):
             continue
         try:
             driver.get(row["url"])
+            if scraper.name=="cnbc.com":
+                if "video.cnbc.com" in row["url"]:
+                    df.loc[index,"Video"] = "True"
+                else:
+                    df.loc[index,"Video"] = "False"
+
             if scraper.name in ["yahoo.com"] and cookies_accepted==False:
                 scraper.acceptCookies(driver)
                 cookies_accepted = True
