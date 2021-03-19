@@ -14,6 +14,8 @@ class usaToday:
 
         soup = BeautifulSoup(html, "html.parser")
         article_tag = soup.find("div",{"class":"caas-content-wrapper"})
+        if article_tag==None:
+            article_tag = soup.find("article")
 
         if article_tag!=None:
             article = ""
@@ -21,8 +23,12 @@ class usaToday:
                 article += text4csv(p.get_text())
 
         author_span = article_tag.find("div", {"class": "caas-attr-meta"})
+        if article_tag==None:
+            author_span = article_tag.find("div", {"class": "caas-attr-meta"})
+
         if author_span!=None:
             author = text4csv(author_span.get_text())
+
 
         return article, author
 
