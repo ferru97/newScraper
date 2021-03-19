@@ -23,8 +23,11 @@ class usaToday:
                 article += text4csv(p.get_text())
 
         author_span = article_tag.find("div", {"class": "caas-attr-meta"})
-        if article_tag==None:
-            author_span = article_tag.find("div", {"class": "caas-attr-meta"})
+        if author_span==None:
+            author_span = article_tag.find("a", {"class": "authors"})
+        if author_span==None:
+            author_span = article_tag.find("span", {"class": "authors"})
+        
 
         if author_span!=None:
             author = text4csv(author_span.get_text())
